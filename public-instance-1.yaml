@@ -1,0 +1,36 @@
+# Create a public instance in defaul VPC with Custome Security Group and defeault
+AWSTemplateFormatVersion: 2010-09-09
+Resources: 
+  publicInstance1: 
+    Type: AWS::EC2::Instance
+    Properties: 
+      ImageId: 'ami-0d058fe428540cd89' #ubuntu 20.04 LTS
+      InstanceType: 't2.micro'
+      KeyName: 'bnkey'
+      Tags: 
+        - Key: "Name"
+          Value: "public-instance-1"
+      SecurityGroups:
+        - !Ref customSecurityGroup
+        - default
+  securityGroupInboundRule:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: sg-01e331b9cc55699a7
+      IpProtocol: '-1'
+      FromPort: -1
+      ToPort: -1
+      CidrIp: '0.0.0.0/0'
+  customSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'barnyar-master Custom Security Group'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: '0.0.0.0/0'
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: '0.0.0.0/0'
